@@ -1,3 +1,4 @@
+
 * {
     margin: 0;
     padding: 0;
@@ -93,6 +94,6 @@ li button:hover {
 }
 
 li.completed {
-    text-decoration: line-through;
+  
     color: gray;
 }
