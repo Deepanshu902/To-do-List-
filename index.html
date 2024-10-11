@@ -5,70 +5,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>To do List</title>
+    
 </head>
 <body>
     <div class="main">
-
         <div class="container">
-
             <h2>To-Do List</h2>
             <div class="add">
-            <input type="text" placeholder="Enter Your Task" id="result">
-
-            <button type="submit">ADD</button>
-        </div>
-
-        <ul style="list-style-type: none;"></ul>
-
+                <input type="text" placeholder="Enter Your Task" id="result">
+                <button type="submit">ADD</button>
+            </div>
+            <ul style="list-style-type: none;"></ul>
         </div>
     </div>
 </body>
 <script>
-        const button = document.querySelector('button')
-        button.addEventListener('click',()=>{
-            let task = document.getElementById('result').value
-            let result = document.querySelector('ul')
-            const li = document.createElement('li')
-          
-            if(task == ''){ // empty condition check 
-                alert("Write task")
-            }
-            else{
+    const button = document.querySelector('button');
+    const taskList = document.querySelector('ul');
+    
+    // Load tasks from local storage when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        let storedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        storedTasks.forEach(task => {
+            addTaskToList(task);
+        });
+    });
 
-            result.appendChild(li)
-            li.innerHTML = task
+    button.addEventListener('click', () => {
+        let task = document.getElementById('result').value;
+        let todo = JSON.parse(localStorage.getItem('tasks')) || []; // Load current tasks from local storage
 
-
-               
-                 // checkbox code
-            let checkbox = document.createElement('input')
-            checkbox.setAttribute("type","checkbox")
-            checkbox.style.marginRight="20px"
-           li.prepend(checkbox)
-
-            checkbox.addEventListener('click',()=>{
-              
-                        li.style.textDecoration= "line-through";
-                    
-                    })
-
-                    
-            
-
-                    // delete button code
-            let deleteButton = document.createElement('button')
-            deleteButton.innerHTML = 'Delete'
-            deleteButton.style.margin="20px"
-            li.appendChild(deleteButton)
-
-            deleteButton.addEventListener('click',()=>{
-                li.remove()
-            })
-
+        if (task === '') {
+            alert("Write task");
+        } else {
+            addTaskToList(task);
+            todo.push(task);
+            localStorage.setItem('tasks', JSON.stringify(todo)); // Update local storage
+            document.getElementById('result').value = ''; // Clear input after adding
         }
+    });
 
-        })
+    // Function to add a task to the list with checkbox and delete button
+    function addTaskToList(task) {
+        const li = document.createElement('li');
+        li.innerHTML = task;
 
+        // Add checkbox
+        let checkbox = document.createElement('input');
+        checkbox.setAttribute("type", "checkbox");
+        checkbox.style.marginRight = "20px";
+        li.prepend(checkbox);
 
+        checkbox.addEventListener('click', () => {
+            if (checkbox.checked) {
+                li.style.textDecoration = "line-through";
+            } else {
+                li.style.textDecoration = "none";
+            }
+        });
+
+        // Add delete button
+        let deleteButton = document.createElement('button');
+        deleteButton.innerHTML = 'Delete';
+        deleteButton.style.margin = "20px";
+        li.appendChild(deleteButton);
+
+        deleteButton.addEventListener('click', () => {
+            li.remove();
+            removeTaskFromLocalStorage(task); // Remove task from local storage
+        });
+
+        taskList.appendChild(li);
+    }
+
+    // Function to remove a task from local storage
+    function removeTaskFromLocalStorage(task) {
+        let storedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        storedTasks = storedTasks.filter(t => t !== task);
+        localStorage.setItem('tasks', JSON.stringify(storedTasks)); // Update local storage after deletion
+    }
 </script>
 </html>

@@ -93,6 +93,6 @@ li button:hover {
 }
 
 li.completed {
-    text-decoration: line-through;
+  
     color: gray;
 }
